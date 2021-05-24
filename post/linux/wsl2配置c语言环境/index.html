@@ -1,0 +1,219 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>WSL2配置C语言开发环境 -</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="霍浩东"><meta name=description content="之前一直在Ubuntu下编写C/C++程序，体验十分良好，工具链一应俱全。然而，Linux下的办公和通讯软件少之又少，日常用起来的体验太差。"><meta name=generator content="Hugo 0.83.1 with theme even"><link rel=canonical href=/post/linux/wsl2%E9%85%8D%E7%BD%AEc%E8%AF%AD%E8%A8%80%E7%8E%AF%E5%A2%83/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><script async src=//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js></script><link href=/sass/main.min.cb68f97bc9cece255d217346d970e3c62623408634e500c330a62fadabbbe77c.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="WSL2配置C语言开发环境"><meta property="og:description" content="之前一直在Ubuntu下编写C/C++程序，体验十分良好，工具链一应俱全。然而，Linux下的办公和通讯软件少之又少，日常用起来的体验太差。"><meta property="og:type" content="article"><meta property="og:url" content="/post/linux/wsl2%E9%85%8D%E7%BD%AEc%E8%AF%AD%E8%A8%80%E7%8E%AF%E5%A2%83/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-05-23T15:11:54+08:00"><meta property="article:modified_time" content="2021-05-23T15:11:54+08:00"><meta itemprop=name content="WSL2配置C语言开发环境"><meta itemprop=description content="之前一直在Ubuntu下编写C/C++程序，体验十分良好，工具链一应俱全。然而，Linux下的办公和通讯软件少之又少，日常用起来的体验太差。"><meta itemprop=datePublished content="2021-05-23T15:11:54+08:00"><meta itemprop=dateModified content="2021-05-23T15:11:54+08:00"><meta itemprop=wordCount content="3242"><meta itemprop=keywords content="Windows,C,"><meta name=twitter:card content="summary"><meta name=twitter:title content="WSL2配置C语言开发环境"><meta name=twitter:description content="之前一直在Ubuntu下编写C/C++程序，体验十分良好，工具链一应俱全。然而，Linux下的办公和通讯软件少之又少，日常用起来的体验太差。"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo></a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a><a href=/categories/><li class=mobile-menu-item>Categories</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo></a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li><li class=menu-item><a class=menu-item-link href=/categories/>Categories</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>WSL2配置C语言开发环境</h1><div class=post-meta><span class=post-time>2021-05-23</span><div class=post-category><a href=/categories/linux/>Linux</a></div><span class=more-meta>约 3242 字</span>
+<span class=more-meta>预计阅读 7 分钟</span>
+<span id=busuanzi_container_page_pv class=more-meta><span id=busuanzi_value_page_pv><img src=/img/spinner.svg alt=spinner.svg></span> 次阅读</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><ul><li><a href=#wsl2的安装和基本配置>WSL2的安装和基本配置</a><ul><li><a href=#安装>安装</a></li><li><a href=#配置软件源>配置软件源</a></li><li><a href=#配置git>配置Git</a></li><li><a href=#配置网络代理>配置网络代理</a></li><li><a href=#配置zsh可选>配置ZSH（可选）</a></li><li><a href=#wsl内置的vscode支持>WSL内置的VSCode支持</a></li></ul></li><li><a href=#cc环境配置>C/C++环境配置</a><ul><li><a href=#安装cc工具链>安装C/C++工具链</a></li><li><a href=#ide配置>IDE配置</a></li></ul></li></ul></li></ul></nav></div></div><div class=post-content><blockquote><p>之前一直在Ubuntu下编写C/C++程序，体验十分良好，工具链一应俱全。然而，Linux下的办公和通讯软件少之又少，日常用起来的体验太差。WSL(<em>Windows Subsystem Of Linux</em>)一代虽然充满黑科技，但是看微软团队的意思，应该是技术难度过大，只好妥协一下，采用类虚拟机的方式来实现WSL2，技术上和虚拟机无差，也正好满足我的需求，常用软件的适配也十分积极，最近尝试了一下WSL2，内核轻量化，启动非常快，使用起来比虚拟机要方便。刚开始使用时按照以前Linux的使用经验去配置，出现了一些问题，网上搜到的一些文章要么莫名其妙，要么漏洞百出，踩了一些坑，浪费了很多时间才解决。这里记录下WSL2的配置以及后续配置C/C++环境的方法。</p></blockquote><h2 id=wsl2的安装和基本配置>WSL2的安装和基本配置</h2><h3 id=安装>安装</h3><p>WSL2的安装方式有两种。</p><ul><li>打开Win10的应用商店搜索Ubuntu关键字，根据个人喜好选择Ubuntu版本即可（其他发行版类似，下面的配置都默认发行版为Ubuntu20.04版本）。(<strong>推荐的方式</strong>)</li><li>去微软官网下载独立的软件包，然后在自己想要安装的位置点击安装即可，这时你安装的WSL2是在你安装它的位置，可以避免占用C盘空间，但是这样安装的话会存在一些问题，比如CLion无法检测到你系统内安装在C盘以外的WSL，而且VSCode连接WSL后的智能检测也会出问题，自动补全也会出错。所以<strong>不推荐这样安装</strong>。</li></ul><h3 id=配置软件源>配置软件源</h3><p>WSL2的微软商店评论区中有人评论说：“不要更换官方的软件源，更新后会出问题”。我按照正常的方法去配置后没有发现问题，可能是微软官方已经修复了。这里软件源的配置和单系统的Ubuntu没有任何区别。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell><span class=nb>cd</span> /etc/apt/ <span class=c1># 进入镜像文件所在的目录</span>
+ls
+sudo rm sources.list <span class=c1># 这里图方便直接选择删除镜像文件，也可以先备份一下，备份方法 sudo cp ./sources.list ./sources.list.backup</span>
+sudo touch sources.list <span class=c1># 新建镜像文件</span>
+sudo nano sources.list <span class=c1># 选择自己习惯的镜像源，复制镜像然后粘贴并保存即可，我自己选用的是阿里的源</span>
+</code></pre></td></tr></table></div></div><p>阿里的Ubuntu软件源（<strong>这里是ubuntu20.04版本的软件源，其他版本的自行搜索</strong>）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+
+deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+</code></pre></td></tr></table></div></div><p>最后通过<code>sudo apt update</code>更新软件源即可。</p><h3 id=配置git>配置Git</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>git config --global user.name <span class=s2>&#34;你的用户名&#34;</span>
+git config --global user.email <span class=s2>&#34;你的邮箱&#34;</span>
+</code></pre></td></tr></table></div></div><h3 id=配置网络代理>配置网络代理</h3><p>一般在Linux发行版上使用代理，通过一些代理软件即可实现。WSL2没有GUI，且网络和Windows是分开的，配置网络代理不方便，而且Windows对于WSL而言其ip是动态的，因此想要实现代理比较麻烦，这里提供一个小脚本来实现**（前提是Windows配置了代理）**。</p><p>微软官方提供了WSL2获取Windows IP的方式，相关信息存储在了<code>/etc/resolv.conf</code>文件中，通过<code>cat</code>查看文件内容</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>cat /etc/resolv.conf
+</code></pre></td></tr></table></div></div><p>文件格式如下所示</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback># This file was automatically generated by WSL. To stop automatic generation of this file, add the following entry to /etc/wsl.conf:
+# [network]
+# generateResolvConf = false
+nameserver 172.31.176.1
+</code></pre></td></tr></table></div></div><p>可以看到提供了一个<code>nameserver</code>字段来对应Windows的IP地址。有了IP地址事情就变得简单了。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>cat /etc/resolv.conf<span class=p>|</span>grep nameserver<span class=p>|</span>awk <span class=s1>&#39;{print $2}&#39;</span>
+</code></pre></td></tr></table></div></div><p>上述命令可以直接获取IP值，配合Windows的Socks代理端口即可实现WSL的网络代理（我设置的端口号为12000，可根据个人情况自行配置）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell><span class=nb>export</span> <span class=nv>windows_host</span><span class=o>=</span><span class=sb>`</span>cat /etc/resolv.conf<span class=p>|</span>grep nameserver<span class=p>|</span>awk <span class=s1>&#39;{print $2}&#39;</span><span class=sb>`</span>
+<span class=nb>export</span> <span class=nv>ALL_PROXY</span><span class=o>=</span>socks5://<span class=nv>$windows_host</span>:10808
+<span class=nb>export</span> <span class=nv>HTTP_PROXY</span><span class=o>=</span><span class=nv>$ALL_PROXY</span>
+<span class=nb>export</span> <span class=nv>http_proxy</span><span class=o>=</span><span class=nv>$ALL_PROXY</span>
+<span class=nb>export</span> <span class=nv>HTTPS_PROXY</span><span class=o>=</span><span class=nv>$ALL_PROXY</span>
+<span class=nb>export</span> <span class=nv>https_proxy</span><span class=o>=</span><span class=nv>$ALL_PROXY</span>
+
+<span class=k>if</span> <span class=o>[</span> <span class=s2>&#34;`git config --global --get proxy.https`&#34;</span> !<span class=o>=</span> <span class=s2>&#34;socks5://</span><span class=nv>$windows_host</span><span class=s2>:10808&#34;</span> <span class=o>]</span><span class=p>;</span> 
+<span class=k>then</span> git config --global proxy.https socks5://<span class=nv>$windows_host</span>:10808
+<span class=k>fi</span>
+</code></pre></td></tr></table></div></div><p>上述命令同时配置了终端代理与git代理，后续根据个人情况复制到<code>.bashrc</code>或者<code>.zshrc</code>文件的底部即可。更多细节可参考<a href=%5Bhttps://jiayaoo3o.github.io/2020/06/23/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1WSL2%E7%9A%84%E7%BD%91%E7%BB%9C%E4%BB%A3%E7%90%86%E9%85%8D%E7%BD%AE/%5D(https://jiayaoo3o.github.io/2020/06/23/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1WSL2%E7%9A%84%E7%BD%91%E7%BB%9C%E4%BB%A3%E7%90%86%E9%85%8D%E7%BD%AE/)>这篇文章</a>。</p><h3 id=配置zsh可选>配置ZSH（可选）</h3><p>zsh是一个相当实用的shell，在兼容bash语法与易用性之间达到了平衡，我个人推荐是使用zsh，至于bash shell或者fish shell则依据个人喜好选择即可。这里提供zsh的配置方式。</p><p>首先安装zsh</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>sudo apt install zsh
+</code></pre></td></tr></table></div></div><p>之后切换到zsh并更改默认shell（可选，后续安装oh-my-zsh会提供切换默认shell的选项）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>zsh
+chsh
+</code></pre></td></tr></table></div></div><p><strong>安装oh-my-zsh</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>sh -c &#34;$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&#34;
+</code></pre></td></tr></table></div></div><p>这里需要注意的是，如果是安装到当前用户，无需添加<code>sudo</code>参数，否则会安装到<code>root</code>用户上，而WSL对<code>root</code>提供的操作很少，一般都是使用在安装WSL时新建的用户来进行日常操作，这里推荐安装到当前用户。（如果没有配置代理的话，安装过程会非常的不顺利，可以选择去<strong>Gitee</strong>上寻找<code>oh-my-zsh</code>的国内仓库，按照文档自行安装。）</p><p>安装好<code>oh-my-zsh</code>时，会提示你是否将zsh为默认的shell，这里选择y即可。</p><p><strong>安装插件</strong></p><p>oh-my-zsh不仅帮你简化了zsh的配置，也给你提供了插件的选项，这里推荐<code>git</code>（zsh内置的插件）、<code>zsh-autosuggestions</code>、<code>zsh-syntax-highlighting</code>这三个插件，自行安装插件后在<code>.zshrc</code>文件的<code>plugin</code>选项后面用空格分开插件名即可。</p><ul><li>安装zsh-autosuggestions</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>git clone https://github.com/zsh-users/zsh-autosuggestions <span class=si>${</span><span class=nv>ZSH_CUSTOM</span><span class=k>:-</span><span class=p>~/.oh-my-zsh/custom</span><span class=si>}</span>/plugins/zsh-autosuggestions
+</code></pre></td></tr></table></div></div><ul><li>安装zsh-syntax-highlighting</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git <span class=si>${</span><span class=nv>ZSH_CUSTOM</span><span class=k>:-</span><span class=p>~/.oh-my- zsh/custom</span><span class=si>}</span>/plugins/zsh-syntax-highlighting
+</code></pre></td></tr></table></div></div><p>安装后对<code>.zshrc</code>文件中的<code>plugin</code>选项进行设置即可，如下所示</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+</code></pre></td></tr></table></div></div><p><strong>使用powerlevel10k主题</strong></p><p>这是一个非常好用且启动速度超快的oh-my-zsh主题（<a href=https://github.com/romkatv/powerlevel10k>Github仓库地址</a>），按照作者提供的文档内容自行配置即可。</p><h3 id=wsl内置的vscode支持>WSL内置的VSCode支持</h3><p>WSL作为微软的产品，几乎无缝对接自家的VSCode Editor，在WSL中使用VSCode非常简单，第一次使用需要先安装VSCode的支持。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>sudo apt install code
+</code></pre></td></tr></table></div></div><p>之后想要在WSL里使用VSCode打开、创建与编写文件，只需要用<code>code</code>指令即可，使用起来类似<code>vim</code>、<code>nano</code>。</p><p><strong>注意：无法以sudo的方式使用code命令，想要对一些根目录下的文件进行操作的话，可以先chown到当前用户，对文件操作完成后再改回root，例如：</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>sudo chown myuser /path/to/file
+</code></pre></td></tr></table></div></div><p>对文件操作完成后，再更改文件持有者为<code>root</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>sudo chown root /path/to/file
+</code></pre></td></tr></table></div></div><h2 id=cc环境配置>C/C++环境配置</h2><h3 id=安装cc工具链>安装C/C++工具链</h3><p>工具链的配置和原生Linux没有什么区别，根据自身需求安装好cmake、make、gdb、gcc等工具即可。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-zsh data-lang=zsh>sudo apt install cmake make gdb gcc
+</code></pre></td></tr></table></div></div><h3 id=ide配置>IDE配置</h3><h4 id=visualstudiocode>VisualStudioCode</h4><p>VSCode对WSL的本地支持通过插件实现，在扩展商店搜索<code>Remote Development</code>关键字即可看到扩展包合集，按需安装即可（其中Remote-WSL必须安装）。</p><p><img src=https://hhd-blog.oss-cn-beijing.aliyuncs.com/img/20201120153326.png alt="插件市场中的Remote Development合集"></p><p>安装完成后，就可以通过左下角的按钮来进入WSL环境进行开发了。</p><h4 id=clion>CLion</h4><p>CLion已经对WSL提供了原生支持，本质上其实是对原本SSH的开发方式进行了二次封装。在配置CLion前需要先配置WSL中的SSH服务，手动配置的话稍微有点麻烦，好在Jetbrains公司提供了一个<a href=https://github.com/JetBrains/clion-wsl/blob/master/ubuntu_setup_env.sh><strong>脚本</strong></a>进行自动化配置。</p><p>在终端里自建<code>.sh</code>格式的脚本文件，复制下面的脚本内容并保存然后执行即可。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell><span class=cp>#!/bin/bash
+</span><span class=cp></span><span class=nb>set</span> -e
+
+<span class=nv>SSHD_LISTEN_ADDRESS</span><span class=o>=</span>127.0.0.1
+
+<span class=nv>SSHD_PORT</span><span class=o>=</span><span class=m>2222</span>
+<span class=nv>SSHD_FILE</span><span class=o>=</span>/etc/ssh/sshd_config
+<span class=nv>SUDOERS_FILE</span><span class=o>=</span>/etc/sudoers
+  
+<span class=c1># 0. update package lists</span>
+sudo apt-get update
+
+<span class=c1># 0.1. reinstall sshd (workaround for initial version of WSL)</span>
+sudo apt remove -y --purge openssh-server
+sudo apt install -y openssh-server
+
+<span class=c1># 0.2. install basic dependencies</span>
+sudo apt install -y cmake gcc clang gdb valgrind build-essential
+
+<span class=c1># 1.1. configure sshd</span>
+sudo cp <span class=nv>$SSHD_FILE</span> <span class=si>${</span><span class=nv>SSHD_FILE</span><span class=si>}</span>.<span class=sb>`</span>date <span class=s1>&#39;+%Y-%m-%d_%H-%M-%S&#39;</span><span class=sb>`</span>.back
+sudo sed -i <span class=s1>&#39;/^Port/ d&#39;</span> <span class=nv>$SSHD_FILE</span>
+sudo sed -i <span class=s1>&#39;/^ListenAddress/ d&#39;</span> <span class=nv>$SSHD_FILE</span>
+sudo sed -i <span class=s1>&#39;/^UsePrivilegeSeparation/ d&#39;</span> <span class=nv>$SSHD_FILE</span>
+sudo sed -i <span class=s1>&#39;/^PasswordAuthentication/ d&#39;</span> <span class=nv>$SSHD_FILE</span>
+<span class=nb>echo</span> <span class=s2>&#34;# configured by CLion&#34;</span>      <span class=p>|</span> sudo tee -a <span class=nv>$SSHD_FILE</span>
+<span class=nb>echo</span> <span class=s2>&#34;ListenAddress </span><span class=si>${</span><span class=nv>SSHD_LISTEN_ADDRESS</span><span class=si>}</span><span class=s2>&#34;</span>	<span class=p>|</span> sudo tee -a <span class=nv>$SSHD_FILE</span>
+<span class=nb>echo</span> <span class=s2>&#34;Port </span><span class=si>${</span><span class=nv>SSHD_PORT</span><span class=si>}</span><span class=s2>&#34;</span>          <span class=p>|</span> sudo tee -a <span class=nv>$SSHD_FILE</span>
+<span class=nb>echo</span> <span class=s2>&#34;UsePrivilegeSeparation no&#34;</span>  <span class=p>|</span> sudo tee -a <span class=nv>$SSHD_FILE</span>
+<span class=nb>echo</span> <span class=s2>&#34;PasswordAuthentication yes&#34;</span> <span class=p>|</span> sudo tee -a <span class=nv>$SSHD_FILE</span>
+<span class=c1># 1.2. apply new settings</span>
+sudo service ssh --full-restart
+  
+<span class=c1># 2. autostart: run sshd </span>
+sed -i <span class=s1>&#39;/^sudo service ssh --full-restart/ d&#39;</span> ~/.bashrc
+<span class=nb>echo</span> <span class=s2>&#34;%sudo ALL=(ALL) NOPASSWD: /usr/sbin/service ssh --full-restart&#34;</span> <span class=p>|</span> sudo tee -a <span class=nv>$SUDOERS_FILE</span>
+cat <span class=s>&lt;&lt; &#39;EOF&#39; &gt;&gt; ~/.bashrc
+</span><span class=s>sshd_status=$(service ssh status)
+</span><span class=s>if [[ $sshd_status = *&#34;is not running&#34;* ]]; then
+</span><span class=s>  sudo service ssh --full-restart
+</span><span class=s>fi
+</span><span class=s>EOF</span>
+  
+
+<span class=c1># summary: SSHD config info</span>
+<span class=nb>echo</span> 
+<span class=nb>echo</span> <span class=s2>&#34;SSH server parameters (</span><span class=nv>$SSHD_FILE</span><span class=s2>):&#34;</span>
+<span class=nb>echo</span> <span class=s2>&#34;ListenAddress </span><span class=si>${</span><span class=nv>SSHD_LISTEN_ADDRESS</span><span class=si>}</span><span class=s2>&#34;</span>
+<span class=nb>echo</span> <span class=s2>&#34;Port </span><span class=si>${</span><span class=nv>SSHD_PORT</span><span class=si>}</span><span class=s2>&#34;</span>
+<span class=nb>echo</span> <span class=s2>&#34;UsePrivilegeSeparation no&#34;</span>
+<span class=nb>echo</span> <span class=s2>&#34;PasswordAuthentication yes&#34;</span>
+</code></pre></td></tr></table></div></div><p>保存后执行该脚本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>sh ./ubuntu_setup_env.sh
+</code></pre></td></tr></table></div></div><p>该脚本实际上是配置了一个端口号为<code>2222</code>的本地SSH服务。</p><p>之后打开一个CLion项目并进入设置界面，找到<code>Toolchains</code>选项，点击<code>+</code>号选择<code>WSL</code>即可出现下面的窗口</p><p><img src=https://hhd-blog.oss-cn-beijing.aliyuncs.com/img/20201120154143.png alt></p><p>点击<code>Credentials</code>最右边的设置按钮进入<code>SSH Configurations</code>界面，输入WSL的用户名和密码即可。</p><p><img src=https://hhd-blog.oss-cn-beijing.aliyuncs.com/img/20201120165534.png alt></p><p>配置完成后即可正常编写C/C++代码。如检测到缺少诸如cmake、gcc等工具，请在WSL中自行安装。</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>霍浩东</span></p><p class=copyright-item><span class=item-title>上次更新</span>
+<span class=item-content>2021-05-23</span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><a href=/tags/windows/>Windows</a>
+<a href=/tags/c/>C</a></div><nav class=post-nav><a class=prev href=/post/git/progit%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0-%E7%AC%AC%E4%BA%8C%E5%A4%A9/><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">ProGit阅读笔记-第二天</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class=next href=/post/leetcode/%E5%89%91%E6%8C%87offer-16-%E6%95%B0%E5%80%BC%E7%9A%84%E6%95%B4%E6%95%B0%E6%AC%A1%E6%96%B9/><span class="next-text nav-default">剑指offer-16-数值的整数次方</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=social-links><a href=https://github.com/inf1nityhhd class="iconfont icon-github" title=github></a><a href=https://www.zhihu.com/people/xing-qu-shi-ran-36-72 class="iconfont icon-zhihu" title=zhihu></a><a href=https://space.bilibili.com/36579846 class="iconfont icon-bilibili" title=bilibili></a><a href=inf1nityhhd@163.com class="iconfont icon-email" title=email></a><a href=/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a></div><div class=copyright><span class=power-by>由 <a class=hexo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
+<span class=division>|</span>
+<span class=theme-info>主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span><div class=busuanzi-footer><span id=busuanzi_container_site_pv>本站总访问量 <span id=busuanzi_value_site_pv><img src=/img/spinner.svg alt=spinner.svg></span> 次</span>
+<span class=division>|</span>
+<span id=busuanzi_container_site_uv>本站总访客数 <span id=busuanzi_value_site_uv><img src=/img/spinner.svg alt=spinner.svg></span> 人</span></div><span class=copyright-year>&copy;
+2021🐟豫ICP备20010189号-1 💡
+<span>霍浩东</span></span></div></footer><div class=back-to-top id=back-to-top><i class="iconfont icon-up"></i></div></div><script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script><script type=text/javascript src=/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script><script type=text/javascript>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}}</script><script async src=https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin=anonymous></script></body></html>

@@ -1,0 +1,122 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>Docker镜像和容器的基本操作 -</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="霍浩东"><meta name=description content="Docker的命令设计和Linux bash shell十分相似，有Linux使用经验的话各种操作都符合直觉，例如想要操作镜像，则可以用Docker image"><meta name=generator content="Hugo 0.83.1 with theme even"><link rel=canonical href=/post/docker/docker%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><script async src=//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js></script><link href=/sass/main.min.cb68f97bc9cece255d217346d970e3c62623408634e500c330a62fadabbbe77c.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="Docker镜像和容器的基本操作"><meta property="og:description" content="Docker的命令设计和Linux bash shell十分相似，有Linux使用经验的话各种操作都符合直觉，例如想要操作镜像，则可以用Docker image"><meta property="og:type" content="article"><meta property="og:url" content="/post/docker/docker%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-05-23T15:11:54+08:00"><meta property="article:modified_time" content="2021-05-23T15:11:54+08:00"><meta itemprop=name content="Docker镜像和容器的基本操作"><meta itemprop=description content="Docker的命令设计和Linux bash shell十分相似，有Linux使用经验的话各种操作都符合直觉，例如想要操作镜像，则可以用Docker image"><meta itemprop=datePublished content="2021-05-23T15:11:54+08:00"><meta itemprop=dateModified content="2021-05-23T15:11:54+08:00"><meta itemprop=wordCount content="2170"><meta itemprop=keywords content="Docker,"><meta name=twitter:card content="summary"><meta name=twitter:title content="Docker镜像和容器的基本操作"><meta name=twitter:description content="Docker的命令设计和Linux bash shell十分相似，有Linux使用经验的话各种操作都符合直觉，例如想要操作镜像，则可以用Docker image"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo></a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a><a href=/categories/><li class=mobile-menu-item>Categories</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo></a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li><li class=menu-item><a class=menu-item-link href=/categories/>Categories</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>Docker镜像和容器的基本操作</h1><div class=post-meta><span class=post-time>2021-05-23</span><div class=post-category><a href=/categories/docker/>Docker</a></div><span class=more-meta>约 2170 字</span>
+<span class=more-meta>预计阅读 5 分钟</span>
+<span id=busuanzi_container_page_pv class=more-meta><span id=busuanzi_value_page_pv><img src=/img/spinner.svg alt=spinner.svg></span> 次阅读</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><ul><li><ul><li><a href=#tips><strong>tips</strong></a></li></ul></li><li><a href=#镜像操作>镜像操作</a><ul><li><a href=#从docker-hub上获取镜像>从Docker Hub上获取镜像</a></li><li><a href=#列出所有镜像>列出所有镜像</a></li><li><a href=#删除镜像>删除镜像</a></li><li><a href=#构建镜像>构建镜像</a></li><li><a href=#标记tag本地镜像并将其归入某一仓库>标记（tag）本地镜像并将其归入某一仓库</a></li><li><a href=#tips-2>tips</a></li></ul></li><li><a href=#容器操作>容器操作</a><ul><li><a href=#根据镜像新建一个容器>根据镜像新建一个容器</a></li><li><a href=#tips-3>tips</a></li></ul></li></ul></li></ul></nav></div></div><div class=post-content><p>Docker的命令设计和Linux bash shell十分相似，有Linux使用经验的话各种操作都符合直觉，例如想要操作镜像，则可以用<code>Docker image &lt;command></code>来实现各类操作，其中<code>command</code>可以为rm、ls、build等。同理，操作容器可以使用<code>Docker container &lt;command></code>。</p><h3 id=tips><strong>tips</strong></h3><ul><li>在使用zsh时，如果docker命令没有自动补全的话需要在<code>.zshrc</code>的<code>plugin</code>里添加docker插件支持。</li><li>Docker所有命令都可以在其后添加&ndash;help查看基本命令介绍。</li></ul><h2 id=镜像操作>镜像操作</h2><h3 id=从docker-hub上获取镜像>从Docker Hub上获取镜像</h3><p>从Docker Hub上获取镜像的命令类似git，我们使用<code>git pull</code>来获取镜像：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>docker pull [选项] [Docker Registry 地址[:端口号]/]仓库名[:标签]
+</code></pre></td></tr></table></div></div><ul><li><p>Docker 镜像仓库地址：地址的格式一般是 <code>&lt;域名/IP>[:端口号]</code>。默认地址是 Docker Hub(docker.io)。</p></li><li><p>仓库名格式为 <code>&lt;用户名>/&lt;软件名></code>。对于 Docker Hub，如果不给出用户名，则默认为 <code>library</code>，也就是官方镜像。</p></li></ul><h4 id=示例1拉取ubuntu-2004镜像>示例1：拉取ubuntu 20.04镜像</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>❯ docker pull ubuntu:20.04
+20.04: Pulling from library/ubuntu
+83ee3a23efb7: Pulling fs layer
+db98fc6f11f0: Downloading
+f611acd52c6c: Downloading
+20.04: Pulling from library/ubuntu
+83ee3a23efb7: Pull complete
+db98fc6f11f0: Pull complete
+f611acd52c6c: Pull complete
+Digest: sha256:703218c0465075f4425e58fac086e09e1de5c340b12976ab9eb8ad26615c3715
+Status: Downloaded newer image for ubuntu:20.04
+docker.io/library/ubuntu:20.04
+</code></pre></td></tr></table></div></div><h4 id=示例2拉取nginx镜像>示例2：拉取nginx镜像</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>❯ docker pull nginx
+Using default tag: latest
+latest: Pulling from library/nginx
+45b42c59be33: Pull complete
+d0d9e9ea897e: Pull complete
+66e650438339: Pull complete
+76a3dfe4406b: Pull complete
+410ff9d97480: Pull complete
+Digest: sha256:8e10956422503824ebb599f37c26a90fe70541942687f70bbdb744530fc9eba4
+Status: Downloaded newer image for nginx:latest
+docker.io/library/nginx:latest
+</code></pre></td></tr></table></div></div><h4 id=tips-1>tips</h4><ul><li>从上述示例的下载过程中可以看出Docker分层存储的概念，镜像是由多层存储所构成。下载也是一层层的去下载，并非单一文件。下载过程中给出了每一层的 ID 的前 12 位。并且下载结束后，给出该镜像完整的 <code>sha256</code> 的摘要，以确保下载一致性。</li><li>不清楚tag如何选时可以去Docker Hub官方仓库里查看，不同的tag区分不同版本的镜像，例如Ubuntu:20.04中<code>20.04</code>就是镜像对应的tag。</li><li>如果拉取镜像时不添加tag，则默认是latest（自建镜像不添加tag默认也是latest）。</li></ul><h3 id=列出所有镜像>列出所有镜像</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>❯ docker image ls #等价于 docker images
+REPOSITORY               TAG       IMAGE ID       CREATED         SIZE
+nginx                    latest    298ec0e28760   7 days ago      133MB
+ubuntu                   20.04     f63181f19b2f   3 weeks ago     72.9MB
+</code></pre></td></tr></table></div></div><h3 id=删除镜像>删除镜像</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>docker image rm [image id]
+</code></pre></td></tr></table></div></div><h3 id=构建镜像>构建镜像</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>docker build [path to Dockerfile]
+</code></pre></td></tr></table></div></div><h3 id=标记tag本地镜像并将其归入某一仓库>标记（tag）本地镜像并将其归入某一仓库</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>❯ docker images
+REPOSITORY               TAG       IMAGE ID       CREATED         SIZE
+nginx                    latest    298ec0e28760   7 days ago      133MB
+ubuntu                   20.04     f63181f19b2f   3 weeks ago     72.9MB
+docker/getting-started   latest    3c156928aeec   10 months ago   24.8MB
+❯ docker tag ubuntu:20.04 haodong/ubuntu:v1
+❯ docker images
+REPOSITORY               TAG       IMAGE ID       CREATED         SIZE
+nginx                    latest    298ec0e28760   7 days ago      133MB
+haodong/ubuntu           v1        f63181f19b2f   3 weeks ago     72.9MB
+ubuntu                   20.04     f63181f19b2f   3 weeks ago     72.9MB
+docker/getting-started   latest    3c156928aeec   10 months ago   24.8MB
+</code></pre></td></tr></table></div></div><p>上述操作对本地的ubuntu:20.04镜像标记了一个新tag <code>v1</code>并归入了<code>haodong/ubuntu</code>仓库下。删除操作如下所示：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>❯ docker image rm haodong/ubuntu:v1
+Untagged: haodong/ubuntu:v1
+</code></pre></td></tr></table></div></div><blockquote><p>对镜像的其余操作不再赘述，按照linux的使用经验和直觉自行探索，必要时候使用<code>--help</code>来查看即可。</p></blockquote><h3 id=tips-2>tips</h3><ul><li>build &ndash; Build an image from a Dockerfile</li><li>history &ndash; Show the history of an image</li><li>import &ndash; Import the contents from a tarball to create a filesystem image</li><li>inspect &ndash; Display detailed information on one or more images</li><li>load &ndash; Load an image from a tar archive or STDIN</li><li>ls &ndash; List images</li><li>prune &ndash; Remove unused images</li><li>pull &ndash; Pull an image or a repository from a registry</li><li>push &ndash; Push an image or a repository to a registry</li><li>rm &ndash; Remove one or more images</li><li>save &ndash; Save one or more images to a tar archive (streamed to STDOUT by default)</li><li>tag &ndash; Tag an image into a repository</li></ul><hr><h2 id=容器操作>容器操作</h2><p>对容器的操作与对上述镜像操作十分相似，docker的命令十分好记且符合直觉。</p><h3 id=根据镜像新建一个容器>根据镜像新建一个容器</h3><p>docker中使用<code>docker run &lt;command> [image][tag] &lt;command></code>的方式来根据镜像新建容器。新建的容器可以运行在前台，随着终端的退出而结束，也可以运行在后台。</p><h4 id=示例1新建一个前台容器并与之交互>示例1：新建一个前台容器并与之交互</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>❯ docker run -it --rm ubuntu:20.04 bash
+root@743c99fd3425:/# ls
+bin  boot  dev  etc  home  lib  lib32  lib64  libx32  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+</code></pre></td></tr></table></div></div><p>上述操作以ubuntu20.04镜像为基础新建了一个容器并打开了<code>stdin</code>并分配了一个<code>pseudo tty</code>同时运行了<code>bash</code>命令启用了bash终端。</p><ul><li><p><code>-it</code>：这是两个参数，一个是 <code>-i</code>：交互式操作，一个是 <code>-t</code> 终端。我们这里打算进入 <code>bash</code> 执行一些命令并查看返回结果，因此我们需要交互式终端。</p></li><li><p><code>--rm</code>：这个参数是说容器退出后随之将其删除。默认情况下，为了排障需求，退出的容器并不会立即删除，除非手动 <code>docker rm</code>。我们这里只是随便执行个命令，看看结果，不需要排障和保留结果，因此使用 <code>--rm</code> 可以避免浪费空间。</p></li><li><p><code>bash</code>：放在镜像名后的是 <strong>命令</strong>，这里我们希望有个交互式 Shell，因此用的是 <code>bash</code>。</p></li></ul><p>之后可以通过<code>exit</code>命令来退出这个容器。</p><h4 id=示例2新建一个运行在后台的容器>示例2：新建一个运行在后台的容器</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>❯ docker run -dp 80:80 nginx
+12c280a74dc43c166a502d36e93236e623fd4643a1955006d8cf2da8060af590
+❯ docker container ls
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                NAMES
+12c280a74dc4   nginx     &#34;/docker-entrypoint.…&#34;   36 seconds ago   Up 35 seconds   0.0.0.0:80-&gt;80/tcp   musing_johnson
+</code></pre></td></tr></table></div></div><p>可以看到我们新建了一个运行ngnix的容器，并且将宿主机的80端口映射到和容器的80号端口。</p><p>其中：</p><ul><li><code>-p</code>参数用来指定端口映射。</li><li><code>-d</code>（detached mode）参数用来指定后台运行的容器。</li></ul><p>这个时候在浏览器打开宿主机的ip对应的80端口即可看到nginx欢迎界面，如下所示：</p><p><img src=https://hhd-blog.oss-cn-beijing.aliyuncs.com/img/20210217121116.png alt></p><p>之后可以通过<code>stop</code>、<code>start</code>、<code>pause</code>、<code>logs</code>等操作来操作容器。</p><h3 id=tips-3>tips</h3><ul><li>attach &ndash; Attach to a running container</li><li>commit &ndash; Create a new image from a container&rsquo;s changes</li><li>cp &ndash; Copy files/folders between a container and the local filesystem</li><li>create &ndash; Create a new container</li><li>diff &ndash; Inspect changes on a container&rsquo;s filesystem</li><li>exec &ndash; Run a command in a running container</li><li>export &ndash; Export a container&rsquo;s filesystem as a tar archive</li><li>inspect &ndash; Display detailed information on one or more containers</li><li>kill &ndash; Kill one or more running containers</li><li>logs &ndash; Fetch the logs of a container</li><li>ls &ndash; List containers</li><li>pause &ndash; Pause all processes within one or more containers</li><li>port &ndash; List port mappings or a specific mapping for the container</li><li>prune &ndash; Remove all stopped containers</li><li>rename &ndash; Rename a container</li><li>restart &ndash; Restart one or more containers</li><li>rm &ndash; Remove one or more containers</li><li>run &ndash; Run a command in a new container</li><li>start &ndash; Start one or more stopped containers</li><li>stats &ndash; Display a live stream of container(s) resource usage statistics</li><li>stop &ndash; Stop one or more running containers</li><li>top &ndash; Display the running processes of a container</li><li>unpause &ndash; Unpause all processes within one or more containers</li><li>update &ndash; Update configuration of one or more containers</li><li>wait &ndash; Block until one or more containers stop, then print their exit codes</li></ul></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>霍浩东</span></p><p class=copyright-item><span class=item-title>上次更新</span>
+<span class=item-content>2021-05-23</span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><a href=/tags/docker/>Docker</a></div><nav class=post-nav><a class=prev href=/post/docker/docker%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">Docker基本概念</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class=next href=/post/java/java%E5%92%8Cc%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0%E5%9B%9E%E8%B0%83%E7%9A%84%E6%96%B9%E5%BC%8F%E5%8F%8A%E5%8C%BA%E5%88%AB/><span class="next-text nav-default">Java和C语言实现回调的方式及区别</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=social-links><a href=https://github.com/inf1nityhhd class="iconfont icon-github" title=github></a><a href=https://www.zhihu.com/people/xing-qu-shi-ran-36-72 class="iconfont icon-zhihu" title=zhihu></a><a href=https://space.bilibili.com/36579846 class="iconfont icon-bilibili" title=bilibili></a><a href=inf1nityhhd@163.com class="iconfont icon-email" title=email></a><a href=/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a></div><div class=copyright><span class=power-by>由 <a class=hexo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
+<span class=division>|</span>
+<span class=theme-info>主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span><div class=busuanzi-footer><span id=busuanzi_container_site_pv>本站总访问量 <span id=busuanzi_value_site_pv><img src=/img/spinner.svg alt=spinner.svg></span> 次</span>
+<span class=division>|</span>
+<span id=busuanzi_container_site_uv>本站总访客数 <span id=busuanzi_value_site_uv><img src=/img/spinner.svg alt=spinner.svg></span> 人</span></div><span class=copyright-year>&copy;
+2021🐟豫ICP备20010189号-1 💡
+<span>霍浩东</span></span></div></footer><div class=back-to-top id=back-to-top><i class="iconfont icon-up"></i></div></div><script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script><script type=text/javascript src=/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script><script type=text/javascript>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}}</script><script async src=https://cdn.jsdelivr.net/npm/mathjax@3.0.5/es5/tex-mml-chtml.js integrity="sha256-HGLuEfFcsUJGhvB8cQ8nr0gai9EucOOaIxFw7qxmd+w=" crossorigin=anonymous></script></body></html>
